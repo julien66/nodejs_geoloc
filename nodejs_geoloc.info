@@ -1,0 +1,7 @@
+name = Nodejs Geolocalisation
+description = Le module de geolocalisation de la FFVL basé sur nodejs.
+package = Nodejs
+version = VERSION
+core = 7.x
+files[] = nodejs_geoloc.module
+configure = admin/config/nodejs

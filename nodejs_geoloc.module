@@ -1,0 +1,37 @@
+<?php
+
+
+/**
+ * Implements hook_nodejs_handlers_info().
+ */
+function nodejs_geoloc_nodejs_handlers_info() {
+  return array(
+    drupal_get_path('module', 'nodejs_geoloc') . '/nodejs_geoloc.js',
+  );
+}
+
+/**
+ * Implements hook_menu
+ */
+function nodejs_geoloc_menu(){
+	$items['user/%user/track'] = array(
+	    'title' => 'Tracking',
+	    'page callback' => 'nodejs_geoloc_track',
+	    'page arguments' => array(1),
+    	    'access arguments' => array('access content'),
+    	    'type' => MENU_LOCAL_TASK,
+  	);
+
+	return $items;	
+}
+
+function nodejs_geoloc_track($user){
+	$output = '';
+	drupal_add_js('http://maps.googleapis.com/maps/api/js?key=AIzaSyD0j7HUREhDcBlyvPwkLD8ICsfelgoLSIE&sensor=false', 'external');
+	drupal_add_js('https://www.google.com/jsapi', 'external');
+	drupal_add_js(drupal_get_path('module', 'nodejs_geoloc') . '/nodejs_geoloc.js', array('type' => 'file'));
+	nodejs_send_content_channel_token('tracking_'.$user->uid);
+
+	$output .= "<div id='map3d' style='height: 400px; width: 600px;'></div> ";
+	return $output;
+}
