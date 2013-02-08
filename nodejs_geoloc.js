@@ -108,9 +108,21 @@ Drupal.behaviors.nodejs_geoloc = {
 }	
 
 
+Drupal.Nodejs.presenceCallbacks = {
+  callback: function(message){
+	if (message.type != 'drupaluser'){
+		if (message.event == 'online'){
+			$("#trackStatus_" + message.uid).html(" Trackeur connecté ").removeClass('statusDisconnect').addClass('statusConnect');
+		}
+		else{						
+			$("#trackStatus_" + message.uid).html(" Trackeur non connecté ").removeClass('statusConnect').addClass('statusDisconnect');
+		}
+	}
+  }
+}
+
 Drupal.Nodejs.callbacks.nodejsGeoloc = {
   callback: function (message) {
-	console.log(message);
 	// Check if this marker uuid already exist.
 	var markId = Drupal.behaviors.nodejs_geoloc.isMarker(message.device);
 	if (markId == "false"){

@@ -4,11 +4,11 @@
 /**
  * Implements hook_nodejs_handlers_info().
  */
-function nodejs_geoloc_nodejs_handlers_info() {
+/*function nodejs_geoloc_nodejs_handlers_info() {
   return array(
     drupal_get_path('module', 'nodejs_geoloc') . '/nodejs_geoloc.js',
   );
-}
+}*/
 
 /**
  * Implements hook_menu
@@ -30,7 +30,15 @@ function nodejs_geoloc_track($user){
 	drupal_add_js('http://maps.googleapis.com/maps/api/js?key=AIzaSyD0j7HUREhDcBlyvPwkLD8ICsfelgoLSIE&sensor=false', 'external');
 	drupal_add_js('https://www.google.com/jsapi', 'external');
 	drupal_add_js(drupal_get_path('module', 'nodejs_geoloc') . '/nodejs_geoloc.js', array('type' => 'file'));
-	nodejs_send_content_channel_token('tracking_'.$user->uid);
+	nodejs_send_content_channel_token('tracking_'.$user->uid, FALSE, 'tracking', $user->uid);
+
+	$result = db_query("SELECT * FROM {nodejs_device_presence} WHERE uid=:uid", array(':uid'=>$user->uid));
+	if ($result->rowCount() == 0){
+		$output .= "<div class='statusDisconnect' id='trackStatus_".$user->uid."'> Trackeur non connecté </div>";
+	}
+	else{
+		$output .= "<div class='statusConnect' id='trackStatus_".$user->uid."'> Trackeur connecté </div>";
+	}
 
 	$output .= "<div id='map3d' style='height: 400px; width: 600px;'></div> ";
 	return $output;
